@@ -10,6 +10,8 @@ import com.querydsl.core.types.Predicate;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,13 +42,14 @@ public class LancamentoResource {
     }
 
     @GetMapping
-    public Iterable<Lancamento> pesquisar(@QuerydslPredicate(root = Lancamento.class) Predicate predicate) {
-        return repository.findAll(predicate);
+    public Page<Lancamento> pesquisar(@QuerydslPredicate(root = Lancamento.class) Predicate predicate,
+                                      Pageable pageable) {
+        return repository.findAll(predicate, pageable);
     }
 
     @PostMapping("/qbe")
-    public Iterable<Lancamento> pesquisar(@RequestBody Lancamento exemplo) {
-        return repository.findAll(lancamento.like(exemplo));
+    public Page<Lancamento> pesquisar(@RequestBody Lancamento exemplo, Pageable pageable) {
+        return repository.findAll(lancamento.like(exemplo), pageable);
     }
 
     @GetMapping("/{codigo}")
