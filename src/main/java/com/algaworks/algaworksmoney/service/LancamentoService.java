@@ -35,7 +35,7 @@ public class LancamentoService {
             throw new PessoaInexistenteException();
         } else {
             return repository.save(lancamento);
-        }po
+        }
     }
 
     public Page<ResumoLancamento> obtemResumo(Predicate predicate, Pageable pageable) {

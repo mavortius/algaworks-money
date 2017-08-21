@@ -1,5 +1,6 @@
 package com.algaworks.algaworksmoney.cors;
 
+import com.algaworks.algaworksmoney.configuration.property.AlgamoneyProperty;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -16,18 +17,23 @@ import java.io.IOException;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class CorsFilter implements Filter {
 
-    private String allowedOrigin = "http://localhost:8081"; // TODO: Configurar para diferentes ambientes
+    private final AlgamoneyProperty property;
+
+    public CorsFilter(AlgamoneyProperty property) {
+        this.property = property;
+    }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response,
                          FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
+        String allowedOriginUrl = property.getSecurity().getAllowedOriginUrl();
 
-        res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
+        res.setHeader("Access-Control-Allow-Origin", allowedOriginUrl);
         res.setHeader("Access-Control-Allow-Credentials", "true");
 
-        if("OPTIONS".equals(req.getMethod()) && allowedOrigin.equals(req.getHeader("Origin"))) {
+        if("OPTIONS".equals(req.getMethod()) && allowedOriginUrl.equals(req.getHeader("Origin"))) {
             res.setHeader("Access-Control-Allow-Methods", "POST, GET, DELETE, PUT, OPTIONS");
             res.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept");
             res.setHeader("Access-Control-Maz-Age", "3600");
