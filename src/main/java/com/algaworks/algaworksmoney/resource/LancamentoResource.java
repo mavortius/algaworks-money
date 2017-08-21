@@ -4,6 +4,7 @@ import com.algaworks.algaworksmoney.event.RecursoCriadoEvent;
 import com.algaworks.algaworksmoney.exception.ApiExceptionHandler;
 import com.algaworks.algaworksmoney.exception.PessoaInexistenteException;
 import com.algaworks.algaworksmoney.model.Lancamento;
+import com.algaworks.algaworksmoney.model.projection.ResumoLancamento;
 import com.algaworks.algaworksmoney.repository.LancamentoRepository;
 import com.algaworks.algaworksmoney.service.LancamentoService;
 import com.querydsl.core.types.Predicate;
@@ -53,6 +54,13 @@ public class LancamentoResource {
     @PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
     public Page<Lancamento> pesquisar(@RequestBody Lancamento exemplo, Pageable pageable) {
         return repository.findAll(lancamento.like(exemplo), pageable);
+    }
+
+    @GetMapping(params = "resumo")
+    @PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
+    public Page<ResumoLancamento> resumir(@QuerydslPredicate(root = Lancamento.class) Predicate predicate,
+                                          Pageable pageable) {
+        return service.obtemResumo(predicate, pageable);
     }
 
     @GetMapping("/{codigo}")

@@ -7,7 +7,13 @@ import com.querydsl.core.annotations.QueryDelegate;
 import com.querydsl.core.types.Predicate;
 import org.springframework.util.StringUtils;
 
+import static com.algaworks.algaworksmoney.model.QLancamento.lancamento;
+
 public class LancamentoPredicateBuilder {
+
+    public static Predicate LancamentoLike(Lancamento exemplo) {
+        return lancamento.like(exemplo);
+    }
 
     @QueryDelegate(Lancamento.class)
     public static Predicate like(QLancamento qLancamento, Lancamento lancamento) {
