@@ -28,7 +28,7 @@ public class AppUserDetailsService implements UserDetailsService {
         Usuario usuario = repository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario ou senha incorretos"));
 
-        return new User(email, usuario.getSenha(), getPermissoes(usuario));
+        return new UsuarioSistema(usuario, getPermissoes(usuario));
     }
 
     private Collection<? extends GrantedAuthority> getPermissoes(Usuario usuario) {
