@@ -4,7 +4,11 @@ import com.algaworks.algaworksmoney.event.RecursoCriadoEvent;
 import com.algaworks.algaworksmoney.model.Pessoa;
 import com.algaworks.algaworksmoney.repository.PessoaRepository;
 import com.algaworks.algaworksmoney.service.PessoaService;
+import com.querydsl.core.types.Predicate;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,8 +36,8 @@ public class PessoaResource {
 
     @GetMapping
     @PreAuthorize("hasAuthority('ROLE_PESQUISAR_PESSOA') and #oauth2.hasScope('read')")
-    public List<Pessoa> listar() {
-        return repository.findAll();
+    public Page<Pessoa> pesquisar(@QuerydslPredicate(root = Pessoa.class) Predicate predicate, Pageable pageable) {
+        return repository.findAll(predicate, pageable);
     }
 
     @GetMapping("/{codigo}")

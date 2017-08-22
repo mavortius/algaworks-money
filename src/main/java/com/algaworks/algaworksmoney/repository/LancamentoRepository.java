@@ -13,9 +13,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LancamentoRepository extends JpaRepository<Lancamento, Long>,
-        QueryDslPredicateExecutor<Lancamento>,
-        QuerydslBinderCustomizer<QLancamento> {
-
+                                                QueryDslPredicateExecutor<Lancamento>,
+                                                QuerydslBinderCustomizer<QLancamento> {
     @Override
     default void customize(QuerydslBindings bindings, QLancamento lancamento) {
         bindings.bind(lancamento.dataVencimentoDe).first((path, value) -> lancamento.dataVencimento.goe(value));
