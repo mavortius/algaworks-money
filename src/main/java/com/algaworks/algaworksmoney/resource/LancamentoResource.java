@@ -2,7 +2,7 @@ package com.algaworks.algaworksmoney.resource;
 
 import com.algaworks.algaworksmoney.event.RecursoCriadoEvent;
 import com.algaworks.algaworksmoney.exception.ApiExceptionHandler;
-import com.algaworks.algaworksmoney.exception.PessoaInexistenteException;
+import com.algaworks.algaworksmoney.exception.PessoaInexistenteOuInativaException;
 import com.algaworks.algaworksmoney.model.Lancamento;
 import com.algaworks.algaworksmoney.model.projection.ResumoLancamento;
 import com.algaworks.algaworksmoney.repository.LancamentoRepository;
@@ -81,8 +81,8 @@ public class LancamentoResource {
         return ResponseEntity.status(HttpStatus.CREATED).body(novoLancamento);
     }
 
-    @ExceptionHandler({PessoaInexistenteException.class})
-    public ResponseEntity<Object> handlePessoaInexistenteException(PessoaInexistenteException ex) {
+    @ExceptionHandler({PessoaInexistenteOuInativaException.class})
+    public ResponseEntity<Object> handlePessoaInexistenteException(PessoaInexistenteOuInativaException ex) {
         String mensagemUsuario = messageSource.getMessage("pessoa.inexistente-ou-inativa", null, LocaleContextHolder.getLocale());
         String mensagemDesenvolvedor = ex.toString();
         List<ApiExceptionHandler.MensagemErro> erros = Arrays.asList(new ApiExceptionHandler.MensagemErro(mensagemUsuario, mensagemDesenvolvedor));
@@ -95,5 +95,16 @@ public class LancamentoResource {
     @PreAuthorize("hasAuthority('ROLE_REMOVER_LANCAMENTO') and #oauth2.hasScope('write')")
     public void remover(@PathVariable Long codigo) {
         repository.delete(codigo);
+    }
+
+    @PutMapping("/{codigo}")
+    @PreAuthorize("hasAuthority('ROLE_CADASTRAR_LANCAMENTO') and #oauth2.hasScope('write')")
+    public ResponseEntity<Lancamento> atualizar(@PathVariable Long codigo, @Valid @RequestBody Lancamento lancamento) {
+        try {
+            Lancamento lancamentoSalvo = service.atualizar(codigo, lancamento);
+            return ResponseEntity.ok(lancamentoSalvo);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
