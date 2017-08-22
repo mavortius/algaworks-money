@@ -1,6 +1,8 @@
 package com.algaworks.algaworksmoney.token;
 
 import com.algaworks.algaworksmoney.configuration.property.AlgamoneyProperty;
+import com.algaworks.algaworksmoney.configuration.property.ProfileType;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +12,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@Profile(ProfileType.OAUTH_SECURITY)
 @RestController
 @RequestMapping("/tokens")
 public class TokenResource {

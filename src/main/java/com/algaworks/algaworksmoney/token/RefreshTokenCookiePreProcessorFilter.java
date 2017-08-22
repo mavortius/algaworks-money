@@ -1,6 +1,8 @@
 package com.algaworks.algaworksmoney.token;
 
+import com.algaworks.algaworksmoney.configuration.property.ProfileType;
 import org.apache.catalina.util.ParameterMap;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -12,6 +14,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.IOException;
 import java.util.Map;
 
+@Profile(ProfileType.OAUTH_SECURITY)
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class RefreshTokenCookiePreProcessorFilter implements Filter {

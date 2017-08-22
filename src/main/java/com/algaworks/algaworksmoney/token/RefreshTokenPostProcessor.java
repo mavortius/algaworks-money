@@ -1,6 +1,8 @@
 package com.algaworks.algaworksmoney.token;
 
 import com.algaworks.algaworksmoney.configuration.property.AlgamoneyProperty;
+import com.algaworks.algaworksmoney.configuration.property.ProfileType;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -17,6 +19,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@Profile(ProfileType.OAUTH_SECURITY)
 @ControllerAdvice
 public class RefreshTokenPostProcessor implements ResponseBodyAdvice<OAuth2AccessToken> {
 
