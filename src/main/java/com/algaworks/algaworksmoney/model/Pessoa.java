@@ -82,6 +82,6 @@ public class Pessoa {
 
     @JsonIgnore
     public boolean isInativa() {
-        return ativo;
+        return !ativo;
     }
 }

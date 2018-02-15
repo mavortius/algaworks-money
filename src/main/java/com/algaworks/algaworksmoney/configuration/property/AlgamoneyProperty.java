@@ -13,7 +13,7 @@ public class AlgamoneyProperty {
 
     public static class Security {
         private boolean enableHttps;
-        private String allowedOriginUrl = "http://localhost:8080";
+        private String allowedOriginUrl = "http://localhost:4200";
 
         public boolean isEnableHttps() {
             return enableHttps;
