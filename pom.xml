@@ -5,7 +5,7 @@
 
     <groupId>com.algaworks</groupId>
     <artifactId>algaworks-money</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0-Final</version>
     <packaging>jar</packaging>
 
     <name>algaworks-money</name>
