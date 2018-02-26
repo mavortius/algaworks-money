@@ -29,7 +29,6 @@ public class RefreshTokenCookiePreProcessorFilter implements Filter {
             for (Cookie cookie : req.getCookies()) {
                 if (cookie.getName().equals("refreshToken")) {
                     String refreshToken = cookie.getValue();
-                    System.out.println("REFRESH_TOKEN: " + refreshToken);
                     req = new MyServletRequestWrapper(req, refreshToken);
                 }
             }
