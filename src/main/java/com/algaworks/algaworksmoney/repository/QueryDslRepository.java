@@ -97,7 +97,7 @@ public abstract class QueryDslRepository<T, ID extends Serializable>
         return PageableExecutionUtils.getPage(query.fetch(), pageable, () -> countQuery.fetchCount());
     }
 
-    public <P> List<?> findAll(Predicate predicate, Expression<?> groupBy, Expression<P> expression) {
+    public <P> List<?> findAll(Predicate predicate, Expression<P> expression, Expression<?>... groupBy) {
         return createQuery(predicate).select(expression).groupBy(groupBy).fetch();
     }
 
@@ -118,21 +118,20 @@ public abstract class QueryDslRepository<T, ID extends Serializable>
         return from(entityPath);
     }
 
-    protected JPQLQuery<?> createQuery(EntityPath<?> ... paths) {
+    protected JPQLQuery<?> createQuery(EntityPath<?>... paths) {
         return from(paths);
     }
 
-    protected JPQLQuery<T> createQuery(Predicate ... predicates) {
+    protected JPQLQuery<T> createQuery(Predicate... predicates) {
         return createQuery().where(predicates);
     }
-
 
 
     /**
      * Executes the given {@link JPQLQuery} after applying the given {@link Sort}.
      *
      * @param query must not be {@literal null}.
-     * @param sort must not be {@literal null}.
+     * @param sort  must not be {@literal null}.
      * @return
      */
     private List<T> executeSorted(JPQLQuery<T> query, Sort sort) {

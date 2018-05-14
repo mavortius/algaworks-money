@@ -3,9 +3,7 @@ package com.algaworks.algaworksmoney.service;
 import com.algaworks.algaworksmoney.exception.PessoaInexistenteOuInativaException;
 import com.algaworks.algaworksmoney.model.Lancamento;
 import com.algaworks.algaworksmoney.model.Pessoa;
-import com.algaworks.algaworksmoney.model.projection.QLancamentoEstatisticaCategoria;
-import com.algaworks.algaworksmoney.model.projection.QResumoLancamento;
-import com.algaworks.algaworksmoney.model.projection.ResumoLancamento;
+import com.algaworks.algaworksmoney.model.projection.*;
 import com.algaworks.algaworksmoney.repository.LancamentoRepository;
 import com.algaworks.algaworksmoney.repository.LancamentoRepositoryQuery;
 import com.algaworks.algaworksmoney.repository.PessoaRepository;
@@ -36,7 +34,7 @@ public class LancamentoService {
     public Lancamento salvar(Lancamento lancamento) {
         Pessoa pessoa = pessoaRepository.findOne(lancamento.getPessoa().getCodigo());
 
-        if(pessoa == null || pessoa.isInativa()) {
+        if (pessoa == null || pessoa.isInativa()) {
             throw new PessoaInexistenteOuInativaException();
         } else {
             return repository.save(lancamento);
@@ -54,15 +52,25 @@ public class LancamentoService {
         LocalDate ultimoDia = mesReferencia.withDayOfMonth(mesReferencia.lengthOfMonth());
         Predicate periodo = lancamento.dataVencimento.between(primeiroDia, ultimoDia);
 
-        return repositoryQuery.findAll(periodo, lancamento.categoria,
-                new QLancamentoEstatisticaCategoria(lancamento.categoria, lancamento.valor.sum()));
+        return repositoryQuery.findAll(periodo,
+                new QLancamentoEstatisticaCategoria(lancamento.categoria, lancamento.valor.sum()),
+                lancamento.categoria);
     }
 
+    public List<?> obtemPorTipo(LocalDate mesReferencia) {
+        LocalDate primeiroDia = mesReferencia.withDayOfMonth(1);
+        LocalDate ultimoDia = mesReferencia.withDayOfMonth(mesReferencia.lengthOfMonth());
+        Predicate periodo = lancamento.dataVencimento.between(primeiroDia, ultimoDia);
+
+        return repositoryQuery.findAll(periodo,
+                new QLancamentoEstatisticaDia(lancamento.tipo, lancamento.dataVencimento, lancamento.valor.sum()),
+                lancamento.tipo, lancamento.dataVencimento);
+    }
 
     public Lancamento atualizar(Long codigo, Lancamento lancamento) {
         Lancamento lancamentoSalvo = buscarLancamento(codigo);
 
-        if(!lancamento.getPessoa().equals(lancamentoSalvo.getPessoa())) {
+        if (!lancamento.getPessoa().equals(lancamentoSalvo.getPessoa())) {
             validarPessoa(lancamento);
         }
 
@@ -74,11 +82,11 @@ public class LancamentoService {
     private void validarPessoa(Lancamento lancamento) {
         Pessoa pessoa = null;
 
-        if(lancamento.getPessoa().getCodigo() != null) {
+        if (lancamento.getPessoa().getCodigo() != null) {
             pessoa = pessoaRepository.findOne(lancamento.getPessoa().getCodigo());
         }
 
-        if(pessoa == null || pessoa.isInativa()) {
+        if (pessoa == null || pessoa.isInativa()) {
             throw new PessoaInexistenteOuInativaException();
         }
     }
@@ -86,7 +94,7 @@ public class LancamentoService {
     private Lancamento buscarLancamento(Long codigo) {
         Lancamento lancamento = repository.findOne(codigo);
 
-        if(lancamento == null) {
+        if (lancamento == null) {
             throw new IllegalArgumentException();
         }
 

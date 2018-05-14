@@ -5,6 +5,7 @@ import com.algaworks.algaworksmoney.exception.ApiExceptionHandler;
 import com.algaworks.algaworksmoney.exception.PessoaInexistenteOuInativaException;
 import com.algaworks.algaworksmoney.model.Lancamento;
 import com.algaworks.algaworksmoney.model.projection.LancamentoEstatisticaCategoria;
+import com.algaworks.algaworksmoney.model.projection.LancamentoEstatisticaDia;
 import com.algaworks.algaworksmoney.model.projection.ResumoLancamento;
 import com.algaworks.algaworksmoney.repository.LancamentoRepository;
 import com.algaworks.algaworksmoney.service.LancamentoService;
@@ -69,6 +70,12 @@ public class LancamentoResource {
     @PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
     public List<LancamentoEstatisticaCategoria> totalLancamentosPorCategoria() {
         return (List<LancamentoEstatisticaCategoria>) service.obtemPorCategoria(LocalDate.now());
+    }
+
+    @GetMapping("/estatisticas/por-tipo")
+    @PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
+    public List<LancamentoEstatisticaDia> totalLancamentosPorTipo() {
+        return (List<LancamentoEstatisticaDia>) service.obtemPorTipo(LocalDate.now());
     }
 
     @GetMapping("/{codigo}")
