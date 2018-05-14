@@ -3,6 +3,7 @@ package com.algaworks.algaworksmoney.service;
 import com.algaworks.algaworksmoney.exception.PessoaInexistenteOuInativaException;
 import com.algaworks.algaworksmoney.model.Lancamento;
 import com.algaworks.algaworksmoney.model.Pessoa;
+import com.algaworks.algaworksmoney.model.projection.QLancamentoEstatisticaCategoria;
 import com.algaworks.algaworksmoney.model.projection.QResumoLancamento;
 import com.algaworks.algaworksmoney.model.projection.ResumoLancamento;
 import com.algaworks.algaworksmoney.repository.LancamentoRepository;
@@ -13,6 +14,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.List;
 
 import static com.algaworks.algaworksmoney.model.QLancamento.lancamento;
 
@@ -44,6 +48,16 @@ public class LancamentoService {
                 new QResumoLancamento(lancamento.codigo, lancamento.descricao, lancamento.dataVencimento,
                         lancamento.dataPagamento, lancamento.valor, lancamento.tipo, lancamento.categoria.nome, lancamento.pessoa.nome));
     }
+
+    public List<?> obtemPorCategoria(LocalDate mesReferencia) {
+        LocalDate primeiroDia = mesReferencia.withDayOfMonth(1);
+        LocalDate ultimoDia = mesReferencia.withDayOfMonth(mesReferencia.lengthOfMonth());
+        Predicate periodo = lancamento.dataVencimento.between(primeiroDia, ultimoDia);
+
+        return repositoryQuery.findAll(periodo, lancamento.categoria,
+                new QLancamentoEstatisticaCategoria(lancamento.categoria, lancamento.valor.sum()));
+    }
+
 
     public Lancamento atualizar(Long codigo, Lancamento lancamento) {
         Lancamento lancamentoSalvo = buscarLancamento(codigo);

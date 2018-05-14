@@ -17,10 +17,10 @@ public interface LancamentoRepository extends JpaRepository<Lancamento, Long>,
                                                 QuerydslBinderCustomizer<QLancamento> {
     @Override
     default void customize(QuerydslBindings bindings, QLancamento lancamento) {
-        bindings.bind(lancamento.dataVencimentoDe).first((path, value) -> lancamento.dataVencimento.goe(value));
+        /*bindings.bind(lancamento.dataVencimentoDe).first((path, value) -> lancamento.dataVencimento.goe(value));
         bindings.bind(lancamento.dataVencimentoAte).first((path, value) -> lancamento.dataVencimento.loe(value));
         bindings.bind(lancamento.dataPagamentoDe).first((path, value) -> lancamento.dataPagamento.goe(value));
-        bindings.bind(lancamento.dataPagamentoAte).first((path, value) -> lancamento.dataPagamento.loe(value));
+        bindings.bind(lancamento.dataPagamentoAte).first((path, value) -> lancamento.dataPagamento.loe(value));*/
         bindings.bind(String.class).first((SingleValueBinding<StringPath, String>) StringExpression::containsIgnoreCase);
     }
 }

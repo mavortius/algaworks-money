@@ -97,6 +97,10 @@ public abstract class QueryDslRepository<T, ID extends Serializable>
         return PageableExecutionUtils.getPage(query.fetch(), pageable, () -> countQuery.fetchCount());
     }
 
+    public <P> List<?> findAll(Predicate predicate, Expression<?> groupBy, Expression<P> expression) {
+        return createQuery(predicate).select(expression).groupBy(groupBy).fetch();
+    }
+
     /**
      * @see {@link QueryDslPredicateExecutor#count(Predicate)}
      */
@@ -121,6 +125,8 @@ public abstract class QueryDslRepository<T, ID extends Serializable>
     protected JPQLQuery<T> createQuery(Predicate ... predicates) {
         return createQuery().where(predicates);
     }
+
+
 
     /**
      * Executes the given {@link JPQLQuery} after applying the given {@link Sort}.

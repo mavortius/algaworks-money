@@ -4,6 +4,7 @@ import com.algaworks.algaworksmoney.event.RecursoCriadoEvent;
 import com.algaworks.algaworksmoney.exception.ApiExceptionHandler;
 import com.algaworks.algaworksmoney.exception.PessoaInexistenteOuInativaException;
 import com.algaworks.algaworksmoney.model.Lancamento;
+import com.algaworks.algaworksmoney.model.projection.LancamentoEstatisticaCategoria;
 import com.algaworks.algaworksmoney.model.projection.ResumoLancamento;
 import com.algaworks.algaworksmoney.repository.LancamentoRepository;
 import com.algaworks.algaworksmoney.service.LancamentoService;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -61,6 +63,12 @@ public class LancamentoResource {
     public Page<ResumoLancamento> resumir(@QuerydslPredicate(root = Lancamento.class) Predicate predicate,
                                           Pageable pageable) {
         return service.obtemResumo(predicate, pageable);
+    }
+
+    @GetMapping("/estatisticas/por-categoria")
+    @PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
+    public List<LancamentoEstatisticaCategoria> totalLancamentosPorCategoria() {
+        return (List<LancamentoEstatisticaCategoria>) service.obtemPorCategoria(LocalDate.now());
     }
 
     @GetMapping("/{codigo}")
