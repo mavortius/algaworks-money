@@ -1,10 +1,7 @@
 package com.algaworks.algaworksmoney.model;
 
-import com.querydsl.core.annotations.QueryEntity;
-
 import javax.persistence.Embeddable;
 
-@QueryEntity
 @Embeddable
 public class Endereco {
     private String logradouro;

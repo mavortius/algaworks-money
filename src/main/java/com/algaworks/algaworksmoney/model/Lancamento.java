@@ -1,7 +1,6 @@
 package com.algaworks.algaworksmoney.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.querydsl.core.annotations.QueryEntity;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -10,7 +9,6 @@ import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@QueryEntity
 @Entity
 public class Lancamento {
 

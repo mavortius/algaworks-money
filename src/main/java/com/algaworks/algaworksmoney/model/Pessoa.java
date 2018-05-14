@@ -1,12 +1,10 @@
 package com.algaworks.algaworksmoney.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.querydsl.core.annotations.QueryEntity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
-@QueryEntity
 @Entity
 public class Pessoa {
 

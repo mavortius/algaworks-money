@@ -1,7 +1,6 @@
 package com.algaworks.algaworksmoney.model.projection;
 
 import com.algaworks.algaworksmoney.model.TipoLancamento;
-import com.querydsl.core.annotations.QueryEntity;
 import com.querydsl.core.annotations.QueryProjection;
 
 import java.math.BigDecimal;
