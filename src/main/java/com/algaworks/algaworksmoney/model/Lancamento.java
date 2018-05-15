@@ -138,6 +138,11 @@ public class Lancamento {
         this.pessoa = pessoa;
     }
 
+    @JsonIgnore
+    public boolean isReceita() {
+        return tipo.equals(TipoLancamento.RECEITA);
+    }
+
     public LocalDate getDataPagamentoDe() {
         return dataPagamentoDe;
     }
