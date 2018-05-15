@@ -11,6 +11,9 @@ import org.springframework.data.querydsl.binding.QuerydslBindings;
 import org.springframework.data.querydsl.binding.SingleValueBinding;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @Repository
 public interface LancamentoRepository extends JpaRepository<Lancamento, Long>,
                                                 QueryDslPredicateExecutor<Lancamento>,
@@ -23,4 +26,6 @@ public interface LancamentoRepository extends JpaRepository<Lancamento, Long>,
         bindings.bind(lancamento.dataPagamentoAte).first((path, value) -> lancamento.dataPagamento.loe(value));*/
         bindings.bind(String.class).first((SingleValueBinding<StringPath, String>) StringExpression::containsIgnoreCase);
     }
+
+    List<Lancamento> findByDataVencimentoLessThanEqualAndDataPagamentoIsNull(LocalDate data);
 }
