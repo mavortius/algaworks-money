@@ -1,14 +1,16 @@
 package com.algaworks.algaworksmoney.service;
 
 import com.algaworks.algaworksmoney.exception.PessoaInexistenteOuInativaException;
+import com.algaworks.algaworksmoney.mail.Mailer;
 import com.algaworks.algaworksmoney.model.Lancamento;
 import com.algaworks.algaworksmoney.model.Pessoa;
+import com.algaworks.algaworksmoney.model.Usuario;
 import com.algaworks.algaworksmoney.model.projection.*;
 import com.algaworks.algaworksmoney.repository.LancamentoRepository;
 import com.algaworks.algaworksmoney.repository.LancamentoRepositoryQuery;
 import com.algaworks.algaworksmoney.repository.PessoaRepository;
+import com.algaworks.algaworksmoney.repository.UsuarioRepository;
 import com.querydsl.core.types.Predicate;
-import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -17,6 +19,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
@@ -25,20 +28,48 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.algaworks.algaworksmoney.model.QLancamento.lancamento;
 
 @Service
 public class LancamentoService {
 
+    private static final String DESTINATARIOS = "ROLE_PESQUISAR_LANCAMENTO";
+    private static final String AVISO_LANCAMENTOS_VENCIDOS_TEMPLATE = "mail/aviso-lancamentos-vencidos";
+
     private final LancamentoRepository repository;
     private final LancamentoRepositoryQuery repositoryQuery;
     private final PessoaRepository pessoaRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final Mailer mailer;
 
-    public LancamentoService(LancamentoRepository repository, LancamentoRepositoryQuery repositoryQuery, PessoaRepository pessoaRepository) {
+    public LancamentoService(LancamentoRepository repository, LancamentoRepositoryQuery repositoryQuery,
+                             PessoaRepository pessoaRepository, UsuarioRepository usuarioRepository, Mailer mailer) {
         this.repository = repository;
         this.repositoryQuery = repositoryQuery;
         this.pessoaRepository = pessoaRepository;
+        this.usuarioRepository = usuarioRepository;
+        this.mailer = mailer;
+    }
+
+    @Scheduled(cron = "0 0 6 * * *")
+    public void avisarSobreLancamentosVencidos() {
+        List<Lancamento> vencidos = repository
+                .findByDataVencimentoLessThanEqualAndDataPagamentoIsNull(LocalDate.now());
+        List<Usuario> destinatarios = usuarioRepository.findByPermissoesDescricao(DESTINATARIOS);
+        Map<String, Object> valores = new HashMap<>();
+
+        valores.put("lancamentos", vencidos);
+
+        List<String> emails = destinatarios.stream()
+                .map(Usuario::getEmail)
+                .collect(Collectors.toList());
+
+        mailer.send("avisos@algamoney.com", emails,
+                "Lançamentos vencidos",
+                AVISO_LANCAMENTOS_VENCIDOS_TEMPLATE,
+                valores);
     }
 
     public Lancamento salvar(Lancamento lancamento) {
