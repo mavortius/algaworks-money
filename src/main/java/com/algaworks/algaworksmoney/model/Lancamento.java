@@ -68,6 +68,11 @@ public class Lancamento {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate dataVencimentoAte;
 
+    private String anexo;
+
+    @Transient
+    private String urlAnexo;
+
     public Long getCodigo() {
         return codigo;
     }
@@ -159,6 +164,38 @@ public class Lancamento {
 
     public LocalDate getDataVencimentoAte() {
         return dataVencimentoAte;
+    }
+
+    public void setDataPagamentoDe(LocalDate dataPagamentoDe) {
+        this.dataPagamentoDe = dataPagamentoDe;
+    }
+
+    public void setDataPagamentoAte(LocalDate dataPagamentoAte) {
+        this.dataPagamentoAte = dataPagamentoAte;
+    }
+
+    public void setDataVencimentoDe(LocalDate dataVencimentoDe) {
+        this.dataVencimentoDe = dataVencimentoDe;
+    }
+
+    public void setDataVencimentoAte(LocalDate dataVencimentoAte) {
+        this.dataVencimentoAte = dataVencimentoAte;
+    }
+
+    public String getAnexo() {
+        return anexo;
+    }
+
+    public void setAnexo(String anexo) {
+        this.anexo = anexo;
+    }
+
+    public String getUrlAnexo() {
+        return urlAnexo;
+    }
+
+    public void setUrlAnexo(String urlAnexo) {
+        this.urlAnexo = urlAnexo;
     }
 
     @Override

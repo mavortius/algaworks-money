@@ -23,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.io.InputStream;
 import java.sql.Date;
@@ -95,16 +96,6 @@ public class LancamentoService {
         logger.info("Envio de email de aviso concluído.");
     }
 
-    public Lancamento salvar(Lancamento lancamento) {
-        Pessoa pessoa = pessoaRepository.findOne(lancamento.getPessoa().getCodigo());
-
-        if (pessoa == null || pessoa.isInativa()) {
-            throw new PessoaInexistenteOuInativaException();
-        } else {
-            return repository.save(lancamento);
-        }
-    }
-
     public Page<ResumoLancamento> obtemResumo(Predicate predicate, Pageable pageable) {
         return (Page<ResumoLancamento>) repositoryQuery.findAll(predicate, pageable,
                 new QResumoLancamento(lancamento.codigo, lancamento.descricao, lancamento.dataVencimento,
@@ -152,6 +143,16 @@ public class LancamentoService {
         JasperPrint print = JasperFillManager.fillReport(inputStream, parametros, new JRBeanCollectionDataSource(dados));
 
         return JasperExportManager.exportReportToPdf(print);
+    }
+
+    public Lancamento salvar(Lancamento lancamento) {
+        validarPessoa(lancamento);
+
+        if(StringUtils.hasText(lancamento.getAnexo())) {
+            // Salva anexo
+        }
+
+        return repository.save(lancamento);
     }
 
     public Lancamento atualizar(Long codigo, Lancamento lancamento) {
