@@ -3,7 +3,9 @@ package com.algaworks.algaworksmoney.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Entity
 public class Pessoa {
@@ -20,6 +22,10 @@ public class Pessoa {
 
     @NotNull
     private Boolean ativo;
+
+    @Valid
+    @OneToMany(mappedBy = "pessoa", cascade = CascadeType.ALL)
+    private List<Contato> contatos;
 
     public Long getCodigo() {
         return codigo;
@@ -51,6 +57,14 @@ public class Pessoa {
 
     public void setAtivo(Boolean ativo) {
         this.ativo = ativo;
+    }
+
+    public List<Contato> getContatos() {
+        return contatos;
+    }
+
+    public void setContatos(List<Contato> contatos) {
+        this.contatos = contatos;
     }
 
     @Override
