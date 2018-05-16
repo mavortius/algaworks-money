@@ -25,6 +25,12 @@ public class PessoaService {
         }
     }
 
+    public Pessoa salvar(Pessoa pessoa) {
+        pessoa.getContatos().forEach(c -> c.setPessoa(pessoa));
+
+        return repository.save(pessoa);
+    }
+
     public void atualizar(Long codigo, Boolean ativa) {
         Pessoa pessoa = obterPessoaPorCodigo(codigo);
 
@@ -35,6 +41,7 @@ public class PessoaService {
     public Pessoa atualizar(Long codigo, Pessoa pessoa) {
         Pessoa pessoaSalva = obterPessoaPorCodigo(codigo);
 
+        pessoa.getContatos().forEach(c -> c.setPessoa(pessoa));
         BeanUtils.copyProperties(pessoa, pessoaSalva, "codigo");
 
         return repository.save(pessoaSalva);
