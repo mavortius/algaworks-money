@@ -15,6 +15,8 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -34,6 +36,7 @@ import static com.algaworks.algaworksmoney.model.QLancamento.lancamento;
 
 @Service
 public class LancamentoService {
+    private static final Logger logger = LoggerFactory.getLogger(LancamentoService.class);
 
     private static final String DESTINATARIOS = "ROLE_PESQUISAR_LANCAMENTO";
     private static final String AVISO_LANCAMENTOS_VENCIDOS_TEMPLATE = "mail/aviso-lancamentos-vencidos";
@@ -55,9 +58,27 @@ public class LancamentoService {
 
     @Scheduled(cron = "0 0 6 * * *")
     public void avisarSobreLancamentosVencidos() {
+        if(logger.isDebugEnabled()) {
+            logger.debug("Preparando envio de emails de aviso de vencimentos.");
+        }
+
         List<Lancamento> vencidos = repository
                 .findByDataVencimentoLessThanEqualAndDataPagamentoIsNull(LocalDate.now());
+
+        if(vencidos.isEmpty()) {
+            logger.info("Sem lançamentos vencidos para aviso.");
+            return;
+        }
+
+        logger.info("Existem {} lançamentos vencidos.", vencidos.size());
+
         List<Usuario> destinatarios = usuarioRepository.findByPermissoesDescricao(DESTINATARIOS);
+
+        if(destinatarios.isEmpty()) {
+            logger.warn("Existem lançamentos vencidos, mas o sistema não encontrou destinários.");
+            return;
+        }
+
         Map<String, Object> valores = new HashMap<>();
 
         valores.put("lancamentos", vencidos);
@@ -70,6 +91,8 @@ public class LancamentoService {
                 "Lançamentos vencidos",
                 AVISO_LANCAMENTOS_VENCIDOS_TEMPLATE,
                 valores);
+
+        logger.info("Envio de email de aviso concluído.");
     }
 
     public Lancamento salvar(Lancamento lancamento) {
