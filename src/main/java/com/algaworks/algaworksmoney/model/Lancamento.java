@@ -1,6 +1,7 @@
 package com.algaworks.algaworksmoney.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -41,6 +42,7 @@ public class Lancamento {
     @JoinColumn(name = "codigo_categoria")
     private Categoria categoria;
 
+    @JsonIgnoreProperties("contatos")
     @NotNull
     @ManyToOne
     @JoinColumn(name = "codigo_pessoa")
