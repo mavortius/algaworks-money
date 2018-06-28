@@ -31,6 +31,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.algaworks.algaworksmoney.model.QLancamento.lancamento;
@@ -171,7 +172,7 @@ public class LancamentoService {
         Pessoa pessoa = null;
 
         if (lancamento.getPessoa().getCodigo() != null) {
-            pessoa = pessoaRepository.findOne(lancamento.getPessoa().getCodigo());
+            pessoa = pessoaRepository.getOne(lancamento.getPessoa().getCodigo());
         }
 
         if (pessoa == null || pessoa.isInativa()) {
@@ -180,12 +181,12 @@ public class LancamentoService {
     }
 
     private Lancamento buscarLancamento(Long codigo) {
-        Lancamento lancamento = repository.findOne(codigo);
+        Optional<Lancamento> lancamento = repository.findById(codigo);
 
-        if (lancamento == null) {
+        if (!lancamento.isPresent()) {
             throw new IllegalArgumentException();
         }
 
-        return lancamento;
+        return lancamento.get();
     }
 }

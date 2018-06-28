@@ -6,6 +6,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class PessoaService {
 
@@ -16,12 +18,12 @@ public class PessoaService {
     }
 
     public Pessoa obterPessoaPorCodigo(Long codigo) {
-        Pessoa pessoa = repository.findOne(codigo);
+        Optional<Pessoa> pessoa = repository.findById(codigo);
 
-        if(pessoa == null) {
+        if(!pessoa.isPresent()) {
             throw new EmptyResultDataAccessException(1);
         } else {
-            return pessoa;
+            return pessoa.get();
         }
     }
 

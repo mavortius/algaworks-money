@@ -108,9 +108,9 @@ public class LancamentoResource {
     @GetMapping("/{codigo}")
     @PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
     public ResponseEntity<Lancamento> obter(@PathVariable Long codigo) {
-        Lancamento lancamento = repository.findOne(codigo);
-
-        return lancamento != null ? ResponseEntity.ok(lancamento) : ResponseEntity.notFound().build();
+        return repository.findById(codigo)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
@@ -136,7 +136,7 @@ public class LancamentoResource {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('ROLE_REMOVER_LANCAMENTO') and #oauth2.hasScope('write')")
     public void remover(@PathVariable Long codigo) {
-        repository.delete(codigo);
+        repository.deleteById(codigo);
     }
 
     @PutMapping("/{codigo}")

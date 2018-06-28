@@ -5,7 +5,7 @@ import com.algaworks.algaworksmoney.model.QLancamento;
 import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.core.types.dsl.StringPath;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.querydsl.QueryDslPredicateExecutor;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
 import org.springframework.data.querydsl.binding.SingleValueBinding;
@@ -16,7 +16,7 @@ import java.util.List;
 
 @Repository
 public interface LancamentoRepository extends JpaRepository<Lancamento, Long>,
-                                                QueryDslPredicateExecutor<Lancamento>,
+                                                QuerydslPredicateExecutor<Lancamento>,
                                                 QuerydslBinderCustomizer<QLancamento> {
     @Override
     default void customize(QuerydslBindings bindings, QLancamento lancamento) {

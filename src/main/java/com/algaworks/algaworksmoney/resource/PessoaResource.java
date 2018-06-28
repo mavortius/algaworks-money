@@ -43,8 +43,9 @@ public class PessoaResource {
     @GetMapping("/{codigo}")
     @PreAuthorize("hasAuthority('ROLE_PESQUISAR_PESSOA') and #oauth2.hasScope('read')")
     public ResponseEntity<Pessoa> obter(@PathVariable Long codigo) {
-        Pessoa pessoa = repository.findOne(codigo);
-        return pessoa != null ? ResponseEntity.ok(pessoa) : ResponseEntity.notFound().build();
+        return repository.findById(codigo)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
@@ -61,7 +62,7 @@ public class PessoaResource {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('ROLE_REMOVER_PESSOA') and #oauth2.hasScope('write')")
     public void remover(@PathVariable Long codigo) {
-        repository.delete(codigo);
+        repository.deleteById(codigo);
     }
 
     @PutMapping("/{codigo}")
