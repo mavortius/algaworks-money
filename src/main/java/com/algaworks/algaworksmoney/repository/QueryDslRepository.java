@@ -8,8 +8,9 @@ import com.querydsl.jpa.JPQLQuery;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.repository.support.QueryDslRepositorySupport;
-import org.springframework.data.querydsl.QueryDslPredicateExecutor;
+
+import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.support.PageableExecutionUtils;
 
 import javax.persistence.EntityManager;
@@ -18,12 +19,12 @@ import java.util.List;
 
 /**
  * QueryDsl specific class for implementing repositories using QueryDsl library which adds implementation for
- * {@link QueryDslPredicateExecutor}.
+ * {@link QuerydslPredicateExecutor}.
  *
  * @author Marcelo Martins
  */
 public abstract class QueryDslRepository<T, ID extends Serializable>
-        extends QueryDslRepositorySupport implements QueryDslPredicateExecutor<T> {
+        extends QuerydslRepositorySupport implements QuerydslPredicateExecutor<T> {
 
     private final EntityPath<T> entityPath;
 
@@ -40,15 +41,7 @@ public abstract class QueryDslRepository<T, ID extends Serializable>
     }
 
     /**
-     * @see {@link QueryDslPredicateExecutor#findOne(Predicate)}
-     */
-    @Override
-    public T findOne(Predicate predicate) {
-        return createQuery(predicate).fetchFirst();
-    }
-
-    /**
-     * @see {@link QueryDslPredicateExecutor#findAll(Predicate)}
+     * @see {@link QuerydslPredicateExecutor#findAll(Predicate)}
      */
     @Override
     public Iterable<T> findAll(Predicate predicate) {
@@ -56,7 +49,7 @@ public abstract class QueryDslRepository<T, ID extends Serializable>
     }
 
     /**
-     * @see {@link QueryDslPredicateExecutor#findAll(Predicate, Sort)}
+     * @see {@link QuerydslPredicateExecutor#findAll(Predicate, Sort)}
      */
     @Override
     public Iterable<T> findAll(Predicate predicate, Sort sort) {
@@ -64,7 +57,7 @@ public abstract class QueryDslRepository<T, ID extends Serializable>
     }
 
     /**
-     * @see {@link QueryDslPredicateExecutor#findAll(Predicate, OrderSpecifier[])}
+     * @see {@link QuerydslPredicateExecutor#findAll(Predicate, OrderSpecifier[])}
      */
     @Override
     public List<T> findAll(Predicate predicate, OrderSpecifier<?>... orders) {
@@ -72,7 +65,7 @@ public abstract class QueryDslRepository<T, ID extends Serializable>
     }
 
     /**
-     * @see {@link QueryDslPredicateExecutor#findAll(OrderSpecifier[])}
+     * @see {@link QuerydslPredicateExecutor#findAll(OrderSpecifier[])}
      */
     @Override
     public Iterable<T> findAll(OrderSpecifier<?>... orders) {
@@ -80,7 +73,7 @@ public abstract class QueryDslRepository<T, ID extends Serializable>
     }
 
     /**
-     * @see {@link QueryDslPredicateExecutor#findAll(Predicate, Pageable)}
+     * @see {@link QuerydslPredicateExecutor#findAll(Predicate, Pageable)}
      */
     @Override
     public Page<T> findAll(Predicate predicate, Pageable pageable) {
@@ -102,7 +95,7 @@ public abstract class QueryDslRepository<T, ID extends Serializable>
     }
 
     /**
-     * @see {@link QueryDslPredicateExecutor#count(Predicate)}
+     * @see {@link QuerydslPredicateExecutor#count(Predicate)}
      */
     @Override
     public long count(Predicate predicate) {
