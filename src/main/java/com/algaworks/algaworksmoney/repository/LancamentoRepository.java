@@ -2,6 +2,8 @@ package com.algaworks.algaworksmoney.repository;
 
 import com.algaworks.algaworksmoney.model.Lancamento;
 import com.algaworks.algaworksmoney.model.QLancamento;
+import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.DatePath;
 import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.core.types.dsl.StringPath;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,7 +14,10 @@ import org.springframework.data.querydsl.binding.SingleValueBinding;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface LancamentoRepository extends JpaRepository<Lancamento, Long>,
@@ -20,11 +25,21 @@ public interface LancamentoRepository extends JpaRepository<Lancamento, Long>,
                                                 QuerydslBinderCustomizer<QLancamento> {
     @Override
     default void customize(QuerydslBindings bindings, QLancamento lancamento) {
-        /*bindings.bind(lancamento.dataVencimentoDe).first((path, value) -> lancamento.dataVencimento.goe(value));
-        bindings.bind(lancamento.dataVencimentoAte).first((path, value) -> lancamento.dataVencimento.loe(value));
-        bindings.bind(lancamento.dataPagamentoDe).first((path, value) -> lancamento.dataPagamento.goe(value));
-        bindings.bind(lancamento.dataPagamentoAte).first((path, value) -> lancamento.dataPagamento.loe(value));*/
         bindings.bind(String.class).first((SingleValueBinding<StringPath, String>) StringExpression::containsIgnoreCase);
+        bindings.bind(lancamento.dataVencimento).all(this::betweenDates);
+        bindings.bind(lancamento.dataPagamento).all(this::betweenDates);
+    }
+
+    default Optional<Predicate> betweenDates(DatePath<LocalDate> path, Collection<? extends LocalDate> values) {
+        List<LocalDate> dates = new ArrayList<>(values);
+
+        if(dates.size() == 1) {
+            return Optional.ofNullable(path.eq(dates.get(0)));
+        } else {
+            LocalDate from = dates.get(0);
+            LocalDate to = dates.get(1);
+            return Optional.of(path.between(from, to));
+        }
     }
 
     List<Lancamento> findByDataVencimentoLessThanEqualAndDataPagamentoIsNull(LocalDate data);
