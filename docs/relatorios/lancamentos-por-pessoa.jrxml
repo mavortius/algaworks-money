@@ -10,9 +10,9 @@
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
-	<field name="tipo" class="com.algaworks.algaworksmoney.model.TipoLancamento"/>
+	<field name="tipo" class="com.algaworks.algamoney.model.EntryType"/>
 	<field name="total" class="java.math.BigDecimal"/>
-	<field name="pessoa" class="com.algaworks.algaworksmoney.model.Pessoa"/>
+	<field name="pessoa" class="com.algaworks.algamoney.model.Person"/>
 	<title>
 		<band height="58" splitType="Stretch">
 			<textField>

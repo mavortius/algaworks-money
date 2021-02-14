@@ -1,0 +1,1 @@
+ALTER TABLE account_entries ADD COLUMN attachment VARCHAR(200);
